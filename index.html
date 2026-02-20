@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#3182ce">
+<link rel="apple-touch-icon" href="web-app-manifest-192x192.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brother Label Editor</title>
+    <style>
+        /* Base Styles */
+        body { font-family: -apple-system, system-ui, sans-serif; padding: 20px; background: #f0f2f5; display: flex; flex-direction: column; align-items: center; color: #1a202c; }
+        .card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); width: 100%; max-width: 400px; margin-bottom: 20px; }
+        
+        /* Editor UI */
+        h2 { margin: 0 0 20px 0; color: #2d3748; font-size: 1.5rem; text-align: center; }
+        .label-preview { border: 2px dashed #cbd5e0; padding: 20px; margin-bottom: 20px; text-align: center; min-height: 60px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; border-radius: 12px; color: #4a5568; }
+        label { font-size: 0.875rem; font-weight: 600; color: #718096; margin-bottom: 4px; display: block; }
+        input { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; font-size: 16px; transition: border-color 0.2s; }
+        input:focus { border-color: #3182ce; outline: none; box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15); }
+        button { width: 100%; background: #3182ce; color: white; border: none; padding: 16px; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+        button:active { background: #2b6cb0; transform: scale(0.98); }
+
+        /* Setup Process Styles */
+        .setup-box { width: 100%; max-width: 400px; background: #ffffff; border-radius: 16px; padding: 20px; box-sizing: border-box; border: 1px solid #e2e8f0; }
+        .setup-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 16px; color: #2d3748; display: flex; align-items: center; gap: 8px; }
+        .step { display: flex; gap: 12px; margin-bottom: 16px; position: relative; }
+        .step:not(:last-child):after { content: ''; position: absolute; left: 12px; top: 28px; bottom: -10px; width: 2px; background: #edf2f7; }
+        .step-num { background: #ebf4ff; color: #3182ce; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; flex-shrink: 0; }
+        .step-text { font-size: 14px; color: #4a5568; line-height: 1.5; }
+        .step-text strong { color: #2d3748; display: block; margin-bottom: 2px; }
+        .setup-link { color: #3182ce; text-decoration: none; font-weight: 600; }
+        .setup-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Label Editor</h2>
+        <div class="label-preview" id="preview">YOUR TEXT HERE</div>
+        <label>Enter Label Text</label>
+        <input type="text" id="labelContent" placeholder="e.g. Asset #1042" oninput="updatePreview()">
+        <button onclick="printWithSmoothPrint()">PRINT TO BROTHER</button>
+    </div>
+
+    <div class="setup-box">
+        <div class="setup-title">⚙️ Quick Setup</div>
+        
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-text">
+                <strong>Install Smooth Print</strong>
+                <a href="https://support.brother.com/g/b/agreement.aspx?dlid=dlfp101087_000&c=eu_ot&lang=en" target="_blank" class="setup-link">Download from Brother Support</a>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-text">
+				<strong>Import Template</strong>
+				<a href="label.zip" class="setup-link">Download label.zip</a>
+				<div style="font-size: 12px; color: #718096;">
+					1. Download & Open Zip<br>
+					2. Tap label.lbx & select "Open with Smooth Print"
+				</div>
+		</div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-text">
+                <strong>Connect Printer</strong>
+                 select the P-touch printer in the app. if your p-touch is connected to a wifi make sure your phone uses the same wifi
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updatePreview() {
+            const val = document.getElementById('labelContent').value;
+            document.getElementById('preview').innerText = val || "YOUR TEXT HERE";
+        }
+        
+        function printWithSmoothPrint() {
+            const text = document.getElementById('labelContent').value;
+            if (!text) {
+                alert("Please enter some text!");
+                return;
+            }
+            
+            const encodedText = encodeURIComponent(text);
+            
+            // Your original logic: filename and text_myText variable
+            const smoothPrintUrl = `brotherwebprint://print?filename=label.lbx&text_myText=${encodedText}`;
+            window.location.href = smoothPrintUrl;
+        }
+		
+		// Register the Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js') // Make sure your js file is named sw.js
+            .then(reg => console.log('Service Worker registered!'))
+            .catch(err => console.error('Service Worker failed:', err));
+    });
+}
+    </script>
+	
+
+</body>
+</html>
