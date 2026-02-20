@@ -1,3 +1,5 @@
 # P-Touch-easy-mobile-print
 
-test.schwandern.ch
+Use and install app at :
+
+[Test.Schwandern.ch](https://test.schwandern.ch/)
